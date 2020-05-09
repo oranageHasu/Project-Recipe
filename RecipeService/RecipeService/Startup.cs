@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using RecipeService.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -149,12 +150,10 @@ namespace RecipeService
 
         private void ConfigureDatabaseConnection(IServiceCollection services)
         {
-            /*
             services.AddEntityFrameworkNpgsql()
                 .AddDbContext<DatabaseContext>(options =>
                     options.UseNpgsql(Configuration.GetConnectionString("Dev"))
             );
-            */
         }
 
         private void ConfigureAppServices(IServiceCollection services)
@@ -191,7 +190,6 @@ namespace RecipeService
 
         private void ConfigureCORs(IServiceCollection services)
         {
-            // This list of origins will need to contain the URL of the finished front end project (ex. www.furious7.com)
             string[] origins = { "https://localhost:4200/" };
 
             services.AddCors(options =>
