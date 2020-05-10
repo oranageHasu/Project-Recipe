@@ -29,9 +29,15 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
-      "publishAllPorts": true,
-      "useSSL": true
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/v1/login",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "https://+:443",
+        "--network": "dirty_paws_cookbook_default",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HTTPS_PORT": "1616"
+      },
+      "useSSL": true,
+      "sslPort": 1616
     }
   }
 }

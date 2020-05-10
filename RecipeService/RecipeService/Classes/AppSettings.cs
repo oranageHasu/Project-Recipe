@@ -2,7 +2,7 @@
 {
     public class AppSettings
     {
-        public const string TEXT_AppSettings = "ApptSettings";
+        public const string TEXT_AppSettings = "AppSettings";
 
         public string SecretKey { get; set; }
     }

@@ -14,14 +14,16 @@ namespace RecipeService.Services
 
         private readonly AppSettings _appSettings;
         private readonly ErrorLogger _logger;
+        private readonly DatabaseContext _context;
 
         #endregion
         #region Constructors
 
-        public UserService(IOptions<AppSettings> appSettings, ErrorLogger logger)
+        public UserService(IOptions<AppSettings> appSettings, ErrorLogger logger, DatabaseContext context)
         {
             _appSettings = appSettings.Value;
             _logger = logger;
+            _context = context;
         }
 
         #endregion
@@ -35,7 +37,7 @@ namespace RecipeService.Services
             try
             {
                 // Get the user (to ensure they exist, and the provided the correct login info)
-                // tmpUser = _context.Users.FirstOrDefault(u => u.UserName == login.UserName && u.Password == login.Password);
+                tmpUser = _context.Users.FirstOrDefault(u => u.UserName == user.UserName && u.Password == user.Password);
 
                 // Only proceed to change the password if the User was validated above
                 if (tmpUser != null)
@@ -44,8 +46,8 @@ namespace RecipeService.Services
                     tmpUser.Password = user.NewPassword;
 
                     // Update the User
-                    //_context.Users.Update(tmpUser);
-                    //_context.SaveChanges();
+                    _context.Users.Update(tmpUser);
+                    _context.SaveChanges();
 
                     // Indicate to the caller that we succeeded
                     retval = true;
@@ -69,12 +71,9 @@ namespace RecipeService.Services
 
             try
             {
-
                 // Note: Passwords should really be encrypted at rest (doing this for simplicity)
-                /*
                 user = _context.Users
-                    .FirstOrDefault(u => u.Username == userName && u.Password == password);
-                */
+                    .FirstOrDefault(u => u.UserName == userName && u.Password == password);
 
                 // return null if user not found
                 if (user == null)

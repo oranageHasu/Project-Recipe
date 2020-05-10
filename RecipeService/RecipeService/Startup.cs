@@ -21,6 +21,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using CoreService.Classes.Error_Logging_System;
+using static RecipeService.Classes.Constants;
 
 namespace RecipeService
 {
@@ -87,19 +88,12 @@ namespace RecipeService
                 app.UseHsts();
             }
 
-            app.UseMvc();   // Warning is still generated even though we do what Microsoft asks us to do; See Startup.ConfigureMVC()
-
-            app.UseHttpsRedirection();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors();
             app.UseCookiePolicy();
             app.UseAuthorization();
             app.UseAuthentication();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
 
             app.Use(async (context, next) =>
             {
@@ -127,7 +121,7 @@ namespace RecipeService
                 };
 
                 var accessToken = principal?.Claims
-                  .FirstOrDefault(c => c.Type == "access_token");
+                  .FirstOrDefault(c => c.Type == Jwt_Token);
 
                 // Validate the JWT token that is stored in the Cookie (this is done ontop of the cookie authentication)
                 if (accessToken != null)
@@ -137,6 +131,8 @@ namespace RecipeService
 
                 await next();
             });
+
+            app.UseMvc();   // Warning is still generated even though we do what Microsoft asks us to do; See Startup.ConfigureMVC()
         }
 
         #endregion
@@ -150,10 +146,10 @@ namespace RecipeService
 
         private void ConfigureDatabaseConnection(IServiceCollection services)
         {
-            services.AddEntityFrameworkNpgsql()
-                .AddDbContext<DatabaseContext>(options =>
-                    options.UseNpgsql(Configuration.GetConnectionString("Dev"))
-            );
+            services.AddDbContext<DatabaseContext>(options =>
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("Dev"));
+            });
         }
 
         private void ConfigureAppServices(IServiceCollection services)
@@ -190,7 +186,10 @@ namespace RecipeService
 
         private void ConfigureCORs(IServiceCollection services)
         {
-            string[] origins = { "https://localhost:4200/" };
+            string[] origins = { 
+                "https://localhost:4200",
+                "https://localhost:4205"
+            };
 
             services.AddCors(options =>
             {
