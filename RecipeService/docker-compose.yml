@@ -12,12 +12,20 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
-  #recipeservice:
-  #  build: 
-  #      context: ../recipeservice
-  #      dockerfile: Dockerfile
-  #  image: recipe-service:dev
-  #  container_name: "recipe-service"
-
+  recipeservice:
+    build: 
+        context: ../recipeservice/recipeservice
+        dockerfile: Dockerfile
+    image: recipe-service:dev
+    container_name: "recipe-service"
+    ports:
+      - "1616:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=codingSausage!42
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/recipe-service.pfx
+    volumes:
+      - ./recipeservice/certificates:/https:ro
 volumes:
   postgres-data:

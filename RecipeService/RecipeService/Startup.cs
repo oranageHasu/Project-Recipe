@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using RecipeService.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -52,6 +53,9 @@ namespace RecipeService
 
                 // Configure EF Core DB Connection
                 ConfigureDatabaseConnection(services);
+
+                // Configure SSL
+                ConfigureSSL(services);
 
                 // Configure Dependency Injection for Application Services
                 ConfigureAppServices(services);
@@ -152,6 +156,11 @@ namespace RecipeService
             });
         }
 
+        public void ConfigureSSL(IServiceCollection services)
+        {
+            services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme).AddCertificate();
+        }
+
         private void ConfigureAppServices(IServiceCollection services)
         {
             // Configure Dependency Injection for application services (i.e the Service Classes)
@@ -188,7 +197,10 @@ namespace RecipeService
         {
             string[] origins = { 
                 "https://localhost:4200",
-                "https://localhost:4205"
+                "https://localhost:4205",
+                "https://192.168.1.34:4200",
+                "https://192.168.1.29:4200",
+                "https://192.168.1.163:4200"
             };
 
             services.AddCors(options =>
