@@ -165,6 +165,7 @@ namespace RecipeService
         {
             // Configure Dependency Injection for application services (i.e the Service Classes)
             services.AddScoped<UserService>();
+            services.AddScoped<Services.RecipeService>();
 
             // Configure Dependency Injection for misc services (i.e. Logging, AWS, etc.)
             services.AddScoped<ErrorLogger>();
